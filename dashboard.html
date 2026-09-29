@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nukexe Gateway Dashboard</title>
+<link rel="icon" type="image/png" href="{{APP_LOGO}}">
+<link rel="shortcut icon" type="image/png" href="{{APP_LOGO}}">
+<style>
+:root {
+    --bg-base: #0a0f1d;
+    --bg-card: #111827;
+    --bg-card-subtle: #172033;
+    --bg-input: #0c1222;
+    --bg-hover: #1e293b;
+    --border: #232f48;
+    --border-focus: #3b82f6;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --accent-glow: rgba(59, 130, 246, 0.25);
+    --success: #10b981;
+    --success-bg: rgba(16, 185, 129, 0.15);
+    --danger: #ef4444;
+    --danger-bg: rgba(239, 68, 68, 0.15);
+    --warning: #f59e0b;
+    --warning-bg: rgba(245, 158, 11, 0.15);
+    --radius: 0.75rem;
+    --radius-sm: 0.4rem;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.25);
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --tip-bg: #030712;
+    --tip-text: #f1f5f9;
+    --tip-border: #334155;
+}
+
+[data-theme="light"] {
+    --bg-base: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-card-subtle: #f8fafc;
+    --bg-input: #f8fafc;
+    --bg-hover: #e2e8f0;
+    --border: #e2e8f0;
+    --border-focus: #2563eb;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-glow: rgba(37, 99, 235, 0.18);
+    --success: #059669;
+    --success-bg: rgba(5, 150, 105, 0.12);
+    --danger: #dc2626;
+    --danger-bg: rgba(220, 38, 38, 0.12);
+    --warning: #d97706;
+    --warning-bg: rgba(217, 119, 6, 0.12);
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    --shadow-sm: 0 2px 6px rgba(0,0,0,0.05);
+    --tip-bg: #0f172a;
+    --tip-text: #f8fafc;
+    --tip-border: #475569;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.2s ease, border-color 0.2s ease, color 0.1s ease; }
+body { font-family: var(--font); background: var(--bg-base); color: var(--text-main); line-height: 1.5; padding: 1.5rem 1rem; min-height: 100vh; }
+.container { max-width: 1320px; margin: 0 auto; }
+
+/* HEADER */
+header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem; }
+.brand { display: flex; align-items: center; gap: 0.85rem; }
+.brand img { width: 44px; height: 44px; border-radius: 12px; box-shadow: var(--shadow-sm); }
+h1 { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; display: flex; align-items: center; gap: 0.5rem; }
+.subtitle { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.6rem; margin-top: 2px; }
+
+.header-controls { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.pill-group { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.25rem; gap: 0.25rem; }
+
+.icon-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 0.45rem 0.65rem; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.4rem; }
+.icon-btn:hover { background: var(--bg-hover); color: var(--text-main); }
+.icon-btn.active { background: var(--accent); color: #fff; }
+
+.auth-bar { display: flex; align-items: center; gap: 0.6rem; background: var(--bg-card); padding: 0.4rem 0.8rem; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.auth-bar input { background: transparent; border: none; color: var(--success); font-family: monospace; font-size: 0.9rem; width: 190px; outline: none; }
+
+/* TABS */
+.tabs { display: flex; gap: 0.4rem; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 6px; }
+.tab { padding: 0.6rem 1.1rem; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; border-radius: var(--radius); font-size: 0.88rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; }
+.tab:hover { background: var(--bg-hover); color: var(--text-main); transform: translateY(-1px); }
+.tab.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 4px 14px var(--accent-glow); }
+
+/* SUBTABS */
+.subtabs { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+.subtab { background: transparent; border: none; padding: 0.4rem 0.8rem; border-radius: var(--radius-sm); color: var(--text-muted); font-size: 0.88rem; font-weight: 600; cursor: pointer; }
+.subtab.active { background: var(--bg-hover); color: var(--accent); }
+
+/* PANELS */
+.panel { display: none; animation: fadeIn 0.25s ease-out; }
+.panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); position: relative; }
+.card h2 { font-size: 1.15rem; font-weight: 600; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 0.65rem; color: var(--text-main); display: flex; align-items: center; justify-content: space-between; }
+
+/* FORMS */
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem; margin-bottom: 1.2rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; position: relative; }
+.label-row { display: flex; align-items: center; gap: 0.4rem; }
+label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+
+input, select, textarea { padding: 0.65rem 0.85rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-main); font-size: 0.9rem; outline: none; }
+input:focus, select:focus, textarea:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+.checkbox-group { display: flex; align-items: center; gap: 0.6rem; cursor: pointer; font-size: 0.88rem; font-weight: 500; color: var(--text-main); }
+.checkbox-group input { width: 1.15rem; height: 1.15rem; accent-color: var(--accent); cursor: pointer; }
+
+/* CHIPS */
+.chip-container { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.4rem; }
+.chip { font-size: 0.72rem; padding: 0.15rem 0.5rem; border-radius: 999px; background: var(--bg-card-subtle); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; user-select: none; }
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+
+/* TOOLTIPS */
+.tip-trigger {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--bg-hover); color: var(--text-muted);
+    font-size: 0.72rem; font-weight: 700; cursor: help; user-select: none;
+    position: relative; border: 1px solid var(--border); transition: all 0.15s;
+}
+.tip-trigger:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.tip-trigger::after {
+    content: attr(data-tooltip);
+    position: absolute; bottom: 140%; left: 50%;
+    transform: translateX(-50%) scale(0.95);
+    background: var(--tip-bg); color: var(--tip-text);
+    border: 1px solid var(--tip-border); border-radius: 6px;
+    padding: 0.55rem 0.8rem; font-size: 0.76rem; font-weight: 400;
+    line-height: 1.35; white-space: normal; width: max-content; max-width: 290px;
+    box-shadow: 0 10px 25px -3px rgba(0,0,0,0.5); pointer-events: none;
+    opacity: 0; visibility: hidden; transition: all 0.15s ease-out; z-index: 10000;
+    text-transform: none; letter-spacing: normal;
+}
+.tip-trigger:hover::after { opacity: 1; visibility: visible; transform: translateX(-50%) scale(1); }
+
+/* BUTTONS */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.65rem 1.25rem; background: var(--accent); color: #fff; border: 1px solid transparent; border-radius: var(--radius-sm); font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.15s ease-in-out; }
+.btn:hover:not(:disabled) { background: var(--accent-hover); box-shadow: 0 4px 12px var(--accent-glow); transform: translateY(-1px); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(0.5); }
+.btn.danger { background: var(--danger); }
+.btn.danger:hover:not(:disabled) { background: #dc2626; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+.btn.outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+.btn.outline:hover:not(:disabled) { background: var(--bg-hover); }
+.btn.sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; border-radius: 6px; }
+
+/* TABLES */
+.table-responsive { width: 100%; overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-card-subtle); }
+table { width: 100%; border-collapse: collapse; font-size: 0.875rem; text-align: left; }
+th { padding: 0.85rem 1rem; background: var(--bg-card); border-bottom: 1px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover { background: var(--bg-hover); }
+
+/* BADGES */
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: var(--bg-input); padding: 0.2rem 0.45rem; border-radius: 4px; color: var(--accent); border: 1px solid var(--border); font-size: 0.82em; }
+.badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.bg-green { background: var(--success-bg); color: var(--success); }
+.bg-red { background: var(--danger-bg); color: var(--danger); }
+.bg-yellow { background: var(--warning-bg); color: var(--warning); }
+.bg-blue { background: rgba(59, 130, 246, 0.15); color: var(--accent); }
+.bg-gray { background: var(--bg-hover); color: var(--text-muted); }
+
+.help-text { font-size: 0.77rem; color: var(--text-muted); margin-top: 0.3rem; line-height: 1.4; }
+.status-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; position: relative; }
+.status-online { background: var(--success); box-shadow: 0 0 10px var(--success); }
+.status-offline { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+.status-online::after { content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%; background: inherit; animation: pulse 2s infinite ease-out; }
+@keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.8); opacity: 0; } }
+
+/* TOASTS & BANNER BLOCCO */
+#toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; flex-direction: column; gap: 0.6rem; z-index: 9999; max-width: 420px; }
+.toast { background: var(--bg-card); color: var(--text-main); border-left: 4px solid var(--accent); border: 1px solid var(--border); padding: 0.9rem 1.2rem; border-radius: var(--radius-sm); box-shadow: var(--shadow); display: flex; align-items: flex-start; gap: 0.7rem; animation: slideIn 0.25s ease-out; font-size: 0.88rem; word-break: break-word; }
+.toast.error { border-left-color: var(--danger); }
+.toast.warning { border-left-color: var(--warning); }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+#ban-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(8px); z-index: 100000; display: none; align-items: center; justify-content: center; text-align: center; padding: 2rem; }
+.ban-box { background: var(--bg-card); border: 2px solid var(--danger); border-radius: var(--radius); padding: 2.5rem; max-width: 500px; box-shadow: var(--shadow); }
+
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); border: 1px dashed var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; }
+.actions { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+.modal-content { background: var(--bg-card); width: 92%; max-width: 650px; height: 75vh; border-radius: var(--radius); border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: var(--shadow); overflow: hidden; }
+</style>
+</head>
+<body>
+
+<!-- BLOCCO IP BAN -->
+<div id="ban-overlay">
+    <div class="ban-box">
+        <h2 style="color:var(--danger); margin-bottom:1rem; font-size:1.6rem;">🚫 ACCESSO BLOCCATO (IP BANNATO)</h2>
+        <p id="ban-msg" style="color:var(--text-muted); margin-bottom:1.5rem; font-size:0.95rem;"></p>
+        <p class="help-text">Il server ha attivato la protezione automatica Fail2Ban per tentativi falliti ripetuti. Riprova al termine del periodo di ban.</p>
+    </div>
+</div>
+
+<div class="container">
+    <header>
+        <div class="brand">
+            <img src="{{APP_LOGO}}" alt="Nukexe Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%233b82f6\'><path d=\'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\'/></svg>'">
+            <div>
+                <h1>Nukexe</h1>
+                <div class="subtitle">
+                    <span id="baseurl">localhost</span> &bull; 
+                    <span class="status-dot status-offline" id="srv-dot"></span> 
+                    <span id="srv-txt" style="color: var(--danger); font-weight: 600;" data-i18n="status_offline">Offline</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-controls">
+            <!-- Lingua -->
+            <div class="pill-group">
+                <button class="icon-btn" id="lang-it" onclick="setLanguage('it')">🇮🇹 IT</button>
+                <button class="icon-btn" id="lang-en" onclick="setLanguage('en')">🇬🇧 EN</button>
+            </div>
+
+            <!-- Tema -->
+            <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Switch Theme" style="background:var(--bg-card); border:1px solid var(--border); border-radius: var(--radius);">
+                <span id="theme-icon">🌙</span>
+            </button>
+
+            <!-- Shutdown -->
+            <button class="btn sm danger" onclick="shutdownServer()" data-i18n="btn_shutdown" data-tip-key="tip_btn_shutdown">🛑 Spegni</button>
+
+            <!-- Token Bar -->
+            <div class="auth-bar">
+                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                <input id="authtok" type="password" placeholder="Admin Token (adm_...)" onchange="localStorage.setItem('gwx_tok',this.value)" onfocus="this.type='text'" onblur="this.type='password'">
+                <span class="tip-trigger" data-tip-key="tip_admin_bar">?</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- TABS RIORGANIZZATE -->
+    <div class="tabs">
+        <button class="tab active" data-t="routes" onclick="showTab('routes')">🛣️ <span data-i18n="tab_routes">Rotte</span></button>
+        <button class="tab" data-t="tokens" onclick="showTab('tokens')">🔑 <span data-i18n="tab_tokens">Access Token</span></button>
+        <button class="tab" data-t="security" onclick="showTab('security')">🛡️ <span data-i18n="tab_security">Sicurezza</span></button>
+        <button class="tab" data-t="notifications" onclick="showTab('notifications')">🔔 <span data-i18n="tab_notifications">Notifiche & Allarmi</span></button>
+        <button class="tab" data-t="system" onclick="showTab('system')">⚙️ <span data-i18n="tab_system">Sistema & Rete</span></button>
+        <button class="tab" data-t="jobs" onclick="showTab('jobs')">⏳ <span data-i18n="tab_jobs">Coda Jobs</span></button>
+        <button class="tab" data-t="audit" onclick="showTab('audit')">📜 <span data-i18n="tab_audit">Log Audit</span></button>
+        <button class="tab" data-t="about" onclick="showTab('about')">ℹ️ <span data-i18n="tab_about">About</span></button>
+    </div>
+
+    <!-- 1. ROTTE -->
+    <div class="panel active" id="p-routes">
+        <div class="card">
+            <h2 id="route-form-title" data-i18n="routes_title_create">Crea Nuova Rotta API</h2>
+            
+            <div style="display: grid; grid-template-columns: minmax(200px, 1fr) minmax(300px, 2fr); gap: 1.2rem; margin-bottom: 1.2rem;">
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_path">Path API</label>
+                        <span class="tip-trigger" data-tip-key="tip_path">?</span>
+                    </div>
+                    <input id="r-path" placeholder="MYTOOL/RUN">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_exe">Percorso Eseguibile (Assoluto)</label>
+                        <span class="tip-trigger" data-tip-key="tip_exe">?</span>
+                    </div>
+                    <div style="display:flex; gap:0.5rem;">
+                        <input id="r-exe" placeholder="C:\scripts\tool.exe" style="flex:1;">
+                        <button class="btn outline" onclick="openFilePicker('r-exe')" type="button" data-i18n="btn_browse">Sfoglia...</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.2rem;">
+                <div class="label-row">
+                    <label style="color:var(--accent);" data-i18n="label_template">Template Argomenti Dinamici</label>
+                    <span class="tip-trigger" data-tip-key="tip_template">?</span>
+                </div>
+                <input id="r-template" placeholder='Es: --target {$ip} --porta {$config.porta} --utente "{$dati.nome_cognome}"'>
+                <div class="help-text" data-i18n="help_template">I valori tra parentesi graffe verranno sostituiti con i parametri del JSON. Supporta JSON annidati (es. {$server.ip}).</div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_mode">Modalità Sicurezza</label>
+                        <span class="tip-trigger" data-tip-key="tip_mode">?</span>
+                    </div>
+                    <select id="r-mode">
+                        <option value="whitelist" data-i18n="opt_safe">Sicura (Safe)</option>
+                        <option value="dangerous" data-i18n="opt_dangerous">Dangerous (Dynamic EXE)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_exec">Esecuzione</label>
+                        <span class="tip-trigger" data-tip-key="tip_exec">?</span>
+                    </div>
+                    <select id="r-exec">
+                        <option value="sync" data-i18n="opt_sync">Sincrona (Attendi)</option>
+                        <option value="async" data-i18n="opt_async">Asincrona (Job)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_timeout">Timeout (Secondi)</label>
+                        <span class="tip-trigger" data-tip-key="tip_timeout">?</span>
+                    </div>
+                    <input id="r-timeout" type="number" value="30">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_auth">Autenticazione</label>
+                        <span class="tip-trigger" data-tip-key="tip_auth">?</span>
+                    </div>
+                    <select id="r-auth">
+                        <option value="1" data-i18n="opt_auth_req">Richiesta (Bearer Token)</option>
+                        <option value="0" data-i18n="opt_auth_pub">Pubblica (Nessun Token)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_rate">Rate Limit (req/min)</label>
+                        <span class="tip-trigger" data-tip-key="tip_rate">?</span>
+                    </div>
+                    <input id="r-rate" type="number" value="0">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_dedup">Cache Deduplica (sec)</label>
+                        <span class="tip-trigger" data-tip-key="tip_dedup">?</span>
+                    </div>
+                    <input id="r-dedup" type="number" value="-1">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_ip_route">Whitelist IP Rotta</label>
+                        <span class="tip-trigger" data-tip-key="tip_ip_route">?</span>
+                    </div>
+                    <input id="r-allow" placeholder="CSV (opzionale)">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_desc">Descrizione / Note</label>
+                        <span class="tip-trigger" data-tip-key="tip_desc">?</span>
+                    </div>
+                    <input id="r-desc" placeholder="Note per sviluppatori">
+                </div>
+            </div>
+
+            <!-- NOTIFICA WEBHOOK PER-ROTTA -->
+            <div style="margin-top: 0.5rem; margin-bottom: 1rem;">
+                <label class="checkbox-group">
+                    <input type="checkbox" id="r-notify-webhook">
+                    <span data-i18n="label_notify_webhook">Notifica chiamate su Webhook</span>
+                    <span class="tip-trigger" data-tip-key="tip_notify_webhook">?</span>
+                </label>
+                <div id="r-webhook-hint" class="help-text" style="display:none; color:var(--warning); margin-left:1.8rem;"></div>
+            </div>
+        
+            <div class="form-group" style="margin-top: 0.5rem;">
+                <div class="label-row">
+                    <label data-i18n="label_allowed_tok">Token Autorizzati</label>
+                    <span class="tip-trigger" data-tip-key="tip_tokens_acl">?</span>
+                </div>
+                <div id="r-tokens-container" style="display:flex; gap: 1rem; flex-wrap: wrap; padding: 0.8rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-input);">
+                    <span class="help-text" data-i18n="txt_loading_tokens">Caricamento token...</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+                <button class="btn" id="btn-save-route" onclick="saveRoute()" data-i18n="btn_save_route">+ Salva Rotta</button>
+                <button class="btn outline" id="btn-cancel-edit" onclick="cancelEdit()" style="display: none;" data-i18n="btn_cancel">Annulla</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 data-i18n="routes_list_title">Elenco Rotte Configurate</h2>
+            <div class="table-responsive">
+                <div id="routes-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. TOKENS -->
+    <div class="panel" id="p-tokens">
+        <div class="card">
+            <h2 data-i18n="tokens_create_title">Genera Nuovo Access Token</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_tok_desc">Descrizione / Utilizzatore</label>
+                        <span class="tip-trigger" data-tip-key="tip_tok_desc">?</span>
+                    </div>
+                    <input id="t-desc" placeholder="Es. Grafana, Python Worker, Mobile App">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_tok_role">Privilegi</label>
+                        <span class="tip-trigger" data-tip-key="tip_tok_role">?</span>
+                    </div>
+                    <select id="t-type">
+                        <option value="0" data-i18n="opt_role_user">Standard (Esecuzione API)</option>
+                        <option value="1" data-i18n="opt_role_admin">Admin (Controllo Dashboard)</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn" style="margin-top: 0.5rem" onclick="createToken()" data-i18n="btn_gen_tok">Genera Token</button>
+            <div id="t-new" style="margin-top: 1rem"></div>
+        </div>
+
+        <div class="card">
+            <h2 data-i18n="tokens_list_title">Token Registrati</h2>
+            <div class="table-responsive">
+                <div id="tokens-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. SICUREZZA & FIREWALL (PULITA & FOCALIZZATA) -->
+    <div class="panel" id="p-security">
+        <div class="card">
+            <h2 data-i18n="sec_ip_title">Filtro IP & Reverse Proxy</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_ip_mode">Modalità Filtro</label>
+                        <span class="tip-trigger" data-tip-key="tip_ip_mode">?</span>
+                    </div>
+                    <select id="g-ipmode">
+                        <option value="allow_all" data-i18n="opt_ip_allow_all">Consenti Tutti</option>
+                        <option value="whitelist" data-i18n="opt_ip_whitelist">Solo Whitelist</option>
+                        <option value="blacklist" data-i18n="opt_ip_blacklist">Usa Blacklist</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Whitelist (CSV)</label><input id="g-ipwl"></div>
+                <div class="form-group"><label>Blacklist (CSV)</label><input id="g-ipbl"></div>
+            </div>
+            <div style="margin-top:0.5rem;">
+                <label class="checkbox-group">
+                    <input type="checkbox" id="g-trustproxy"> 
+                    <span>Trust X-Forwarded-For (Reverse Proxy / Cloudflare)</span> 
+                    <span class="tip-trigger" data-tip-key="tip_trust_proxy">?</span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 data-i18n="sec_fail2ban_title">Protezione Anti-Flood & Rate Limiting</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_req_global">Max Req Globali / min</label>
+                        <span class="tip-trigger" data-tip-key="tip_req_global">?</span>
+                    </div>
+                    <input id="g-rate" type="number">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_req_route">Max Req per API / min</label>
+                        <span class="tip-trigger" data-tip-key="tip_req_route">?</span>
+                    </div>
+                    <input id="g-rrate" type="number">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_dedup_win">Deduplica Default (sec)</label>
+                        <span class="tip-trigger" data-tip-key="tip_dedup_win">?</span>
+                    </div>
+                    <input id="g-dedup" type="number">
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>
+                <span>Sistema Fail2Ban (Ban Automatico Attacchi)</span>
+            </h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_ban_fails">Fail2Ban: Errori Max</label>
+                        <span class="tip-trigger" data-tip-key="tip_ban_fails">?</span>
+                    </div>
+                    <input id="g-banf" type="number">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_ban_win">Finestra Rilevamento (sec)</label>
+                        <span class="tip-trigger" data-tip-key="tip_ban_win">?</span>
+                    </div>
+                    <input id="g-banw" type="number">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_ban_dur">Durata Ban (minuti)</label>
+                        <span class="tip-trigger" data-tip-key="tip_ban_dur">?</span>
+                    </div>
+                    <input id="g-banm" type="number">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_ban_exempt">IP Immuni dal Ban (CSV)</label>
+                        <span class="tip-trigger" data-tip-key="tip_ban_exempt">?</span>
+                    </div>
+                    <input id="g-exempt">
+                </div>
+            </div>
+            <button class="btn" style="margin-top: 1rem" onclick="saveSecurity()" data-i18n="btn_save_sec">Salva Regole Firewall & Sicurezza</button>
+        </div>
+        
+        <div class="card">
+            <h2 data-i18n="bans_active_title">IP Attualmente Bannati</h2>
+            <div class="table-responsive">
+                <div id="bans-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. NOTIFICHE & ALLARMI (TUTTO IL FLUSSO IN USCITA IN UN'UNICA SCHEDA) -->
+    <div class="panel" id="p-notifications">
+        <!-- CANALE WEBHOOK -->
+        <div class="card" style="border-left: 4px solid var(--accent);">
+            <h2 style="color: var(--accent);">
+                <span data-i18n="webhook_title">Canale Webhook (HTTP POST)</span>
+            </h2>
+            <div class="form-grid">
+                <label class="checkbox-group" style="margin-top:0.3rem;">
+                    <input type="checkbox" id="w-en"> 
+                    <span data-i18n="label_webhook_en">Abilita Webhook</span>
+                    <span class="tip-trigger" data-tip-key="tip_webhook_en">?</span>
+                </label>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_webhook_secret">Secret Firma HMAC</label>
+                        <span class="tip-trigger" data-tip-key="tip_webhook_secret">?</span>
+                    </div>
+                    <input id="w-secret" type="password" placeholder="Opzionale (X-Nukexe-Signature)">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_webhook_timeout">Timeout (sec)</label>
+                        <span class="tip-trigger" data-tip-key="tip_webhook_timeout">?</span>
+                    </div>
+                    <input id="w-timeout" type="number" value="10">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_webhook_max">Max Invii / min</label>
+                        <span class="tip-trigger" data-tip-key="tip_webhook_max">?</span>
+                    </div>
+                    <input id="w-max" type="number" value="60">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:1rem;">
+                <div class="label-row">
+                    <label data-i18n="label_webhook_url">URL Endpoint Destinatari (CSV)</label>
+                    <span class="tip-trigger" data-tip-key="tip_webhook_url">?</span>
+                </div>
+                <input id="w-url" placeholder="https://api.mia-app.it/webhook, https://hooks.slack.com/...">
+            </div>
+
+            <div class="form-group" style="margin-top:1rem;">
+                <div class="label-row">
+                    <label data-i18n="label_webhook_events">Eventi Inoltrati Webhook</label>
+                    <span class="tip-trigger" data-tip-key="tip_webhook_events">?</span>
+                </div>
+                <input id="w-events" placeholder="* oppure route.exec,ip.banned">
+                <div class="chip-container" id="webhook-chips"></div>
+            </div>
+
+            <div class="actions" style="margin-top: 1.5rem">
+                <button class="btn" onclick="saveWebhookSettings()" data-i18n="btn_save_webhook">Salva Webhook</button>
+                <button class="btn outline" onclick="testWebhook()" data-i18n="btn_test_webhook">Invia Webhook di Test</button>
+            </div>
+        </div>
+
+        <!-- CANALE EMAIL SMTP -->
+        <div class="card">
+            <h2>
+                <span data-i18n="settings_smtp_title">Canale Email (SMTP)</span>
+                <span id="smtp-pass-badge" class="badge bg-gray">Password: controllo...</span>
+            </h2>
+            <div class="form-grid">
+                <label class="checkbox-group"><input type="checkbox" id="s-en"> <span data-i18n="opt_smtp_enable">Abilita Notifiche Mail</span></label>
+                <div class="form-group"><label>Host SMTP</label><input id="s-host" placeholder="smtp.mail.com"></div>
+                <div class="form-group"><label data-i18n="label_port">Porta</label><input id="s-port" type="number" value="587"></div>
+                <label class="checkbox-group"><input type="checkbox" id="s-tls" checked> STARTTLS</label>
+            </div>
+            <div class="form-grid" style="margin-top:1rem;">
+                <div class="form-group"><label>Username</label><input id="s-user"></div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label>Password</label>
+                        <span class="tip-trigger" data-tip-key="tip_smtp_pass">?</span>
+                    </div>
+                    <input id="s-pass" type="password" placeholder="Lascia vuoto per non cambiare">
+                </div>
+                <div class="form-group"><label data-i18n="label_from">Email Mittente</label><input id="s-from" placeholder="noreply@domain.com"></div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_to">Destinatari (CSV)</label>
+                        <span class="tip-trigger" data-tip-key="tip_smtp_to">?</span>
+                    </div>
+                    <input id="s-to" placeholder="admin@domain.com">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:1rem;">
+                <div class="label-row">
+                    <label data-i18n="label_mail_events">Filtro Eventi Inviati via Mail</label>
+                    <span class="tip-trigger" data-tip-key="tip_mail_events">?</span>
+                </div>
+                <input id="s-mail-events" placeholder="ip.banned,failures,volume,route.unauthorized,route.forbidden,rate.limited,route.invalid,admin.action">
+                <div class="chip-container" id="mail-chips"></div>
+                <div class="help-text" data-i18n="help_mail_cooldown">Le email usano un cooldown per tipologia evento. Gli eventi multipli ravvicinati vengono aggregati.</div>
+            </div>
+
+            <div class="actions" style="margin-top: 1.5rem">
+                <button class="btn" onclick="saveSmtp()" data-i18n="btn_save_smtp">Salva Configurazione Email</button>
+                <button class="btn outline" onclick="testSmtp()" data-i18n="btn_test_smtp">Invia Mail di Test</button>
+            </div>
+        </div>
+
+        <!-- REGOLE DI TRIGGER E SOGLIE AUTOMATICHE (ORA NEL POSTO GIUSTO!) -->
+        <div class="card">
+            <h2 data-i18n="sec_alarm_title">Soglie di Trigger & Allarmi Automatici</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_nfail">Errori / Min x Scatenare Allarme</label>
+                        <span class="tip-trigger" data-tip-key="tip_nfail">?</span>
+                    </div>
+                    <input id="g-nfail" type="number">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_ncalls">Traffico Anomalo (Req/Min)</label>
+                        <span class="tip-trigger" data-tip-key="tip_ncalls">?</span>
+                    </div>
+                    <input id="g-ncalls" type="number">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_cool">Cooldown Tra Allarmi (minuti)</label>
+                        <span class="tip-trigger" data-tip-key="tip_cool">?</span>
+                    </div>
+                    <input id="g-cool" type="number">
+                </div>
+            </div>
+            <button class="btn" style="margin-top: 1rem" onclick="saveAlarmThresholds()" data-i18n="btn_save_alarms">Salva Soglie Allarmi</button>
+        </div>
+    </div>
+
+    <!-- 5. SISTEMA & RETE (SOLO INFRASTRUTTURA & MANUTENZIONE) -->
+    <div class="panel" id="p-system">
+        <div class="card" style="border-left: 4px solid var(--warning);">
+            <h2 style="color: var(--warning);">
+                <span data-i18n="settings_net_title">Rete & Certificati SSL</span>
+                <span style="font-size: 0.75rem; font-weight: normal; color: var(--text-muted);" data-i18n="txt_req_restart">(Richiede riavvio)</span>
+            </h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_listen_host">Host / IP Ascolto</label>
+                        <span class="tip-trigger" data-tip-key="tip_host">?</span>
+                    </div>
+                    <input id="s-shost">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_listen_port">Porta (Default 8000)</label>
+                        <span class="tip-trigger" data-tip-key="tip_port">?</span>
+                    </div>
+                    <input id="s-sport" type="number">
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_ssl_mode">Modalità SSL</label>
+                        <span class="tip-trigger" data-tip-key="tip_ssl_mode">?</span>
+                    </div>
+                    <select id="s-sslmode">
+                        <option value="0">HTTP (Cleartext)</option>
+                        <option value="1">HTTPS (Self-Signed Auto)</option>
+                        <option value="2">HTTPS (Custom Certs)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_ssl_cert">Certificato Pubblico (.pem/.crt)</label>
+                        <span class="tip-trigger" data-tip-key="tip_ssl_cert">?</span>
+                    </div>
+                    <div style="display:flex; gap:0.5rem;">
+                        <input id="s-sslcert" placeholder="C:\certs\cert.pem" style="flex:1;">
+                        <button class="btn outline" onclick="openFilePicker('s-sslcert')" type="button" data-i18n="btn_browse">Sfoglia...</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label data-i18n="label_ssl_key">Chiave Privata (.key)</label>
+                        <span class="tip-trigger" data-tip-key="tip_ssl_key">?</span>
+                    </div>
+                    <div style="display:flex; gap:0.5rem;">
+                        <input id="s-sslkey" placeholder="C:\certs\key.pem" style="flex:1;">
+                        <button class="btn outline" onclick="openFilePicker('s-sslkey')" type="button" data-i18n="btn_browse">Sfoglia...</button>
+                    </div>
+                </div>
+            </div>
+            <button class="btn" style="margin-top: 1rem; background: var(--warning); color: #000;" onclick="saveServerSettings()" data-i18n="btn_save_net">Salva Rete</button>
+        </div>
+
+        <div class="card">
+            <h2 data-i18n="backup_title">Backup & Ripristino Configurazione</h2>
+            <p class="help-text" style="margin-bottom:1rem;" data-i18n="backup_desc">Esporta o importa rotte e regole in formato JSON sicuro.</p>
+            <div class="actions">
+                <button class="btn outline" onclick="exportConfig()" data-i18n="btn_export">Esporta JSON</button>
+                <input type="file" id="imp-file" accept=".json" style="display:none;" onchange="importConfig(this.files[0])">
+                <button class="btn outline" onclick="document.getElementById('imp-file').click()" data-i18n="btn_import">Importa JSON</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. JOBS -->
+    <div class="panel" id="p-jobs">
+        <div class="card">
+            <h2>
+                <span data-i18n="jobs_title">Coda di Esecuzione Asincrona</span>
+                <button class="btn outline sm" onclick="loadJobs()" data-i18n="btn_refresh">Aggiorna</button>
+            </h2>
+            <div class="table-responsive">
+                <div id="jobs-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. AUDIT -->
+    <div class="panel" id="p-audit">
+        <div class="card">
+            <div class="subtabs">
+                <button class="subtab active" id="subtab-btn-api" onclick="switchAuditSubtab('api')">
+                    🚀 <span data-i18n="tab_audit_api">Esecuzioni API (Client)</span>
+                </button>
+                <button class="subtab" id="subtab-btn-admin" onclick="switchAuditSubtab('admin')">
+                    🛡️ <span data-i18n="tab_audit_admin">Attività & Modifiche Admin</span>
+                </button>
+            </div>
+
+            <!-- SUB-PANEL: API AUDIT -->
+            <div id="audit-sub-api">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <span style="font-size:0.9rem; color:var(--text-muted);" data-i18n="audit_api_subtitle">Storico esecuzioni triggerate dai client</span>
+                    <div style="display:flex; align-items:center; gap: 0.5rem;">
+                        <button class="btn outline sm" id="btn-aud-prev" onclick="changeAudPage(-1)">&#8592;</button>
+                        <span id="aud-page-info" style="font-size: 0.8rem; color: var(--text-muted);">Pag. 1</span>
+                        <button class="btn outline sm" id="btn-aud-next" onclick="changeAudPage(1)">&#8594;</button>
+                        <button class="btn outline sm" onclick="loadAudit()" data-i18n="btn_refresh">Aggiorna</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <div id="audit-list"></div>
+                </div>
+            </div>
+
+            <!-- SUB-PANEL: ADMIN LOG -->
+            <div id="audit-sub-admin" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.8rem;">
+                    <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                        <select id="admlog-filter-method" onchange="renderAdminLog()" style="padding:0.35rem 0.6rem; font-size:0.8rem;">
+                            <option value="">Tutti i metodi</option>
+                            <option value="POST">POST</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                        </select>
+                        <input id="admlog-filter-path" oninput="renderAdminLog()" placeholder="Filtra path (es. /admin/settings)..." style="padding:0.35rem 0.6rem; font-size:0.8rem; width:220px;">
+                    </div>
+                    <div style="display:flex; align-items:center; gap: 0.5rem;">
+                        <button class="btn outline sm" id="btn-admlog-prev" onclick="changeAdminLogPage(-1)">&#8592;</button>
+                        <span id="admlog-page-info" style="font-size: 0.8rem; color: var(--text-muted);">Pag. 1</span>
+                        <button class="btn outline sm" id="btn-admlog-next" onclick="changeAdminLogPage(1)">&#8594;</button>
+                        <button class="btn outline sm" onclick="loadAdminLog()" data-i18n="btn_refresh">Aggiorna</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <div id="adminlog-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. ABOUT -->
+    <div class="panel" id="p-about">
+        <div class="card" style="text-align: center; padding: 4rem 2rem; display: flex; flex-direction: column; align-items: center;">
+            <img src="{{APP_LOGO}}" alt="Nukexe Logo" style="width: 110px; height: 110px; border-radius: 24px; box-shadow: var(--shadow); margin-bottom: 1.5rem;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 24 24\' fill=\'%233b82f6\'><path d=\'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\'/></svg>'">
+            <h2 style="font-size: 2rem; font-weight: 700; border: none; margin-bottom: 0.3rem;">Nukexe Gateway</h2>
+            <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 2rem;" data-i18n="about_tagline">Gateway REST dinamico & Web UI per processi ed eseguibili Windows</p>
+            <div style="background: var(--bg-base); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 2.5rem; text-align: left; min-width: 320px;">
+                <p style="margin-bottom: 0.8rem;"><span style="color:var(--text-muted); font-size:0.75rem; font-weight:700; text-transform:uppercase;" data-i18n="about_dev">Autore</span><br><strong style="font-size: 1.15rem;">Massimo Plachesi</strong></p>
+                <p><span style="color:var(--text-muted); font-size:0.75rem; font-weight:700; text-transform:uppercase;" data-i18n="about_ver">Versione</span><br><strong style="font-size: 1.15rem;">1.0.0</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FILE PICKER MODAL -->
+<div id="file-picker-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <div style="padding:1rem 1.25rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="margin:0; font-size: 1.05rem;" data-i18n="modal_fs_title">Sfoglia File sul Server</h3>
+            <button onclick="document.getElementById('file-picker-modal').style.display='none'" style="background:transparent; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer;">&times;</button>
+        </div>
+        <div style="padding:0.6rem 1.25rem; background:var(--bg-input); border-bottom:1px solid var(--border);">
+            <code id="fp-current-path" style="color:var(--text-main); word-break:break-all;"></code>
+        </div>
+        <div id="fp-list" style="flex:1; overflow-y:auto; padding:0.8rem; display:flex; flex-direction:column; gap:0.25rem;"></div>
+    </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+/* ============================================================
+   DIZIONARIO MULTILINGUA & TOOLTIPS (i18n)
+   ============================================================ */
+const AVAILABLE_EVENTS = ['route.exec', 'route.invalid', 'route.unauthorized', 'route.forbidden', 'rate.limited', 'ip.banned', 'failures', 'volume', 'admin.action'];
+
+const translations = {
+    it: {
+        status_online: "Online", status_offline: "Offline / Non Raggiungibile",
+        btn_shutdown: "🛑 Spegni",
+        tab_routes: "Rotte", tab_tokens: "Access Token", tab_security: "Sicurezza",
+        tab_notifications: "Notifiche & Allarmi", tab_system: "Sistema & Rete",
+        tab_jobs: "Coda Jobs", tab_audit: "Log Audit", tab_about: "About",
+        
+        routes_title_create: "Crea Nuova Rotta API", routes_title_edit: "Modifica API: /",
+        label_path: "Path API", label_exe: "Percorso Eseguibile (Assoluto)",
+        btn_browse: "Sfoglia...", label_template: "Template Argomenti Dinamici",
+        help_template: "I valori tra parentesi graffe verranno sostituiti con i parametri del JSON. Supporta JSON annidati (es. {$server.ip}).",
+        label_mode: "Modalità Sicurezza", opt_safe: "Sicura (Safe)", opt_dangerous: "Dangerous (Dynamic EXE)",
+        label_exec: "Esecuzione", opt_sync: "Sincrona (Attendi)", opt_async: "Asincrona (Job)",
+        label_timeout: "Timeout (Sec)", label_auth: "Autenticazione", opt_auth_req: "Richiesta (Token)", opt_auth_pub: "Pubblica",
+        label_rate: "Rate Limit (req/min)", label_dedup: "Cache Deduplica (sec)", label_ip_route: "Whitelist IP Rotta", label_desc: "Descrizione / Note",
+        label_notify_webhook: "Notifica chiamate su Webhook",
+        label_allowed_tok: "Token Autorizzati (vuoto = tutti)", txt_loading_tokens: "Caricamento token...",
+        btn_save_route: "+ Salva Rotta", btn_cancel: "Annulla", routes_list_title: "Elenco Rotte Configurate",
+        tokens_create_title: "Genera Nuovo Access Token", label_tok_desc: "Descrizione / Utilizzatore", label_tok_role: "Ruolo",
+        opt_role_user: "Standard (API)", opt_role_admin: "Admin (Tutto)", btn_gen_tok: "Genera Token", tokens_list_title: "Token Registrati",
+        
+        // Sezioni Riorganizzate
+        settings_net_title: "Rete & Certificati SSL", txt_req_restart: "(Richiede riavvio)", label_listen_host: "Host / IP Ascolto",
+        label_listen_port: "Porta", label_ssl_mode: "Modalità SSL", label_ssl_cert: "Certificato (.pem/.crt)", label_ssl_key: "Chiave Privata (.key)",
+        btn_save_net: "Salva Rete", settings_smtp_title: "Canale Email (SMTP)", opt_smtp_enable: "Abilita Notifiche Mail",
+        webhook_title: "Canale Webhook (HTTP POST)", label_webhook_en: "Abilita Webhook", label_webhook_url: "URL Endpoint Destinatari (CSV)",
+        label_webhook_secret: "Secret Firma HMAC", label_webhook_events: "Eventi Inoltrati Webhook", label_webhook_timeout: "Timeout (sec)",
+        label_webhook_max: "Max Invii / min", btn_save_webhook: "Salva Webhook", btn_test_webhook: "Invia Webhook di Test",
+        label_mail_events: "Filtro Eventi Inviati via Mail", help_mail_cooldown: "Le email usano un cooldown per tipologia evento. Gli eventi multipli ravvicinati vengono aggregati.",
+        label_port: "Porta", label_from: "Email Mittente", label_to: "Destinatari (CSV)", btn_save_smtp: "Salva Configurazione Email",
+        btn_test_smtp: "Invia Mail di Test", backup_title: "Backup & Ripristino Configurazione", backup_desc: "Esporta o importa rotte e regole in formato JSON.",
+        btn_export: "Esporta JSON", btn_import: "Importa JSON", sec_ip_title: "Filtro IP & Reverse Proxy", label_ip_mode: "Modalità Filtro",
+        opt_ip_allow_all: "Consenti Tutti", opt_ip_whitelist: "Solo Whitelist", opt_ip_blacklist: "Usa Blacklist",
+        sec_fail2ban_title: "Protezione Anti-Flood & Rate Limiting", label_req_global: "Max Req Globali / min", label_req_route: "Max Req API / min",
+        label_dedup_win: "Deduplica Default (sec)", label_ban_fails: "Fail2Ban: Errori Max", label_ban_win: "Finestra Rilevamento (sec)",
+        label_ban_dur: "Durata Ban (minuti)", label_ban_exempt: "IP Immuni dal Ban (CSV)", btn_save_sec: "Salva Regole Firewall & Sicurezza",
+        bans_active_title: "IP Attualmente Bannati", jobs_title: "Coda di Esecuzione Asincrona", btn_refresh: "Aggiorna",
+        audit_title: "Registro Audit Log", about_tagline: "Gateway REST dinamico & Web UI per processi ed eseguibili Windows",
+        about_dev: "Autore", about_ver: "Versione", modal_fs_title: "Sfoglia File sul Server",
+        sec_alarm_title: "Soglie di Trigger & Allarmi Automatici", label_nfail: "Errori / Min x Scatenare Allarme",
+        label_ncalls: "Traffico Anomalo (Req/Min)", label_cool: "Cooldown Tra Allarmi (minuti)", btn_save_alarms: "Salva Soglie Allarmi",
+        tab_audit_api: "Esecuzioni API (Client)", tab_audit_admin: "Attività & Modifiche Admin",
+        audit_api_subtitle: "Storico esecuzioni triggerate dai client",
+        audit_admin_subtitle: "Tracciamento modifiche configurazione e accessi operatore",
+        all_tokens_allowed: "Tutti i Token ammessi", tokens_limited: "Token Limitati", unban: "Sblocca", revoke: "Revoca", active: "Attivo", revoked: "Revocato", none: "Nessun record presente", edit: "Modifica", delete: "Elimina", confirm_del_route: "Eliminare definitivamente questa rotta?", confirm_del_token: "Revocare irrimediabilmente il token?",
+        
+        // Tooltips
+        tip_btn_shutdown: "Arresta l'istanza in background di Nukexe chiudendo il processo e le porte di rete.",
+        tip_admin_bar: "Inserisci qui il Bearer token di tipo Admin per abilitare le chiamate a questa dashboard.",
+        tip_path: "L'URI REST esposto. Esempio: inserendo BACKUP/RUN, l'API sarà invocabile via POST su /BACKUP/RUN.",
+        tip_exe: "Il percorso fisico assoluto su disco dell'eseguibile, script .bat, .cmd o PowerShell da invocare.",
+        tip_template: "Comando e flag da passare al binario. Usa {$chiave} per iniettare i campi ricevuti nel payload JSON della richiesta.",
+        tip_mode: "Safe: esegue solo il binario prestabilito. Dangerous: permette al client di specificare un eseguibile arbitrario nel JSON (_exe). Richiede autenticazione!",
+        tip_exec: "Sincrona: la richiesta HTTP attende la fine del processo e restituisce l'output. Asincrona: avvia un Job e restituisce un job_id.",
+        tip_timeout: "Tempo massimo espresso in secondi oltre il quale il processo verrà terminato forzatamente con SIGKILL.",
+        tip_auth: "Se attivo richiede un Header 'Authorization: Bearer <token>' valido. Se disattivato, l'API è pubblica e aperta a chiunque.",
+        tip_rate: "Numero massimo di richieste al minuto consentite per questa specifica API (0 = usa il valore globale).",
+        tip_dedup: "Evita esecuzioni doppie: risponde dalla memoria cache se la stessa richiesta con identici parametri arriva entro questi secondi (-1 = valore globale).",
+        tip_ip_route: "Lista di IP o sottoreti separate da virgola che hanno il permesso esclusivo di chiamare questo endpoint.",
+        tip_desc: "Descrizione a uso interno visibile nel pannello per documentare lo scopo dell'API.",
+        tip_notify_webhook: "Invia un evento HTTP POST ai webhook configurati ad ogni esecuzione di questa specifica rotta. Richiede webhook_enabled=1 e route.exec nei webhook_events.",
+        tip_tokens_acl: "Limita l'accesso solo a specifici Token creati. Se non selezioni nessun token, tutti i token validi potranno accedere.",
+        tip_tok_desc: "Identificativo utile per ricordarsi chi usa il token (es. Server Monitoraggio, Script Bash, Nome Collega).",
+        tip_tok_role: "Standard: può soltanto chiamare le API autorizzate. Admin: può accedere e modificare le configurazioni in questa dashboard.",
+        tip_host: "IP su cui fare il bind: 0.0.0.0 ascolta su tutte le schede di rete; 127.0.0.1 accetta connessioni solo da questo computer.",
+        tip_port: "Porta TCP su cui rimane in ascolto il webserver (es. 8000, 443, 80).",
+        tip_ssl_mode: "Cleartext: normale HTTP non cifrato. Self-Signed: genera chiavi SSL sicure al volo. Custom: usa i tuoi certificati forniti sotto.",
+        tip_ssl_cert: "Percorso assoluto del file certificato (.crt o .pem) rilasciato da una CA.",
+        tip_ssl_key: "Percorso assoluto della chiave privata non protetta da password (.key).",
+        tip_webhook_en: "Abilita o disabilita globalmente il dispatcher delle notifiche HTTP Webhook.",
+        tip_webhook_url: "Uno o più URL (separati da virgola) a cui Nukexe invierà payload JSON degli eventi di sistema.",
+        tip_webhook_secret: "Chiave segreta per firma HMAC. Viene inviata al destinatario nell'header HTTP X-Nukexe-Signature.",
+        tip_webhook_events: "Filtro eventi. Sintassi: * per tutti, oppure route.exec,ip.banned o esclusione con *, -volume.",
+        tip_webhook_timeout: "Secondi massimi di attesa risposta dal server remoto del webhook prima di abortire.",
+        tip_webhook_max: "Tetto massimo di invii webhook al minuto per evitare saturazione della connessione.",
+        tip_mail_events: "Seleziona quali eventi scatenano l'invio di un'email agli amministratori. Di default route.exec è escluso per non intasare la posta.",
+        tip_smtp_pass: "Se lasciata vuota durante il salvataggio, la password esistente rimarrà intatta nel server cifrata.",
+        tip_smtp_to: "Email che riceveranno gli allarmi in caso di tentativi di intrusione, superamento soglie o allarmi Fail2Ban.",
+        tip_ip_mode: "Consenti Tutti: firewall disattivato. Whitelist: blocca chiunque tranne gli IP in lista. Blacklist: blocca solo gli IP listati.",
+        tip_trust_proxy: "Abilita se Nukexe si trova dietro un Reverse Proxy (come Nginx, Traefik o Cloudflare) per leggere l'IP reale del client dall'header.",
+        tip_req_global: "Soglia limite complessiva di chiamate al minuto gestibili dall'intero gateway prima di scatenare HTTP 429.",
+        tip_req_route: "Limite predefinito applicato alle singole rotte che hanno il campo Rate Limit impostato su 0.",
+        tip_dedup_win: "Secondi predefiniti della finestra di deduplica (anti-rimbalzo) per le rotte impostate su -1.",
+        tip_ban_fails: "Numero di errori (es. token errato, 404, rate limit) necessari per far scattare il ban automatico dell'IP.",
+        tip_ban_win: "Finestra di monitoraggio temporale entro la quale gli errori consecutivi vengono conteggiati.",
+        tip_ban_dur: "Minuti di interdizione totale dal server per l'indirizzo IP colpito da Fail2Ban.",
+        tip_ban_exempt: "Indirizzi IP (es. la tua postazione o il server di monitoraggio) che non devono mai subire ban automatici.",
+        tip_nfail: "Numero di fallimenti (401, 403, 404, 500) al minuto che scatena l'invio immediato di un'email di allerta.",
+        tip_ncalls: "Picco anomalo di chiamate al minuto che fa scattare l'allarme email per possibile attacco DoS o loop di chiamate.",
+        tip_cool: "Minuti di attesa obbligatori tra due email di allarme consecutive per evitare di intasare la casella di posta."
+    },
+    en: {
+        status_online: "Online", status_offline: "Offline / Unreachable",
+        btn_shutdown: "🛑 Shutdown",
+        tab_routes: "Routes", tab_tokens: "Access Tokens", tab_security: "Security",
+        tab_notifications: "Notifications & Alerts", tab_system: "System & Network",
+        tab_jobs: "Job Queue", tab_audit: "Audit Logs", tab_about: "About",
+        
+        routes_title_create: "Create New API Route", routes_title_edit: "Edit Route: /",
+        label_path: "API Path", label_exe: "Executable Path (Absolute)",
+        btn_browse: "Browse...", label_template: "Dynamic Args Template",
+        help_template: "Values in brackets will be injected from the incoming JSON body. Supports nesting (e.g. {$server.ip}).",
+        label_mode: "Security Mode", opt_safe: "Safe (Whitelisted)", opt_dangerous: "Dangerous (Dynamic EXE)",
+        label_exec: "Execution", opt_sync: "Synchronous (Wait)", opt_async: "Asynchronous (Job)",
+        label_timeout: "Timeout (Sec)", label_auth: "Authentication", opt_auth_req: "Required (Token)", opt_auth_pub: "Public",
+        label_rate: "Rate Limit (req/min)", label_dedup: "Dedup Cache (sec)", label_ip_route: "Route IP Whitelist", label_desc: "Description / Notes",
+        label_notify_webhook: "Notify route calls via Webhook",
+        label_allowed_tok: "Authorized Tokens (empty = all)", txt_loading_tokens: "Loading tokens...",
+        btn_save_route: "+ Save Route", btn_cancel: "Cancel", routes_list_title: "Configured Routes",
+        tokens_create_title: "Generate New Access Token", label_tok_desc: "Description / Consumer", label_tok_role: "Role",
+        opt_role_user: "Standard (API)", opt_role_admin: "Admin (Full Control)", btn_gen_tok: "Generate Token", tokens_list_title: "Active Tokens",
+        
+        settings_net_title: "Network & SSL Certificates", txt_req_restart: "(Requires restart)", label_listen_host: "Listening Host / IP",
+        label_listen_port: "Port", label_ssl_mode: "SSL Mode", label_ssl_cert: "Public Cert (.pem/.crt)", label_ssl_key: "Private Key (.key)",
+        btn_save_net: "Save Network", settings_smtp_title: "Email Channel (SMTP)", opt_smtp_enable: "Enable Mail Notifications",
+        webhook_title: "Webhook Channel (HTTP POST)", label_webhook_en: "Enable Webhooks", label_webhook_url: "Target Endpoint URLs (CSV)",
+        label_webhook_secret: "HMAC Secret Key", label_webhook_events: "Forwarded Events", label_webhook_timeout: "Timeout (sec)",
+        label_webhook_max: "Max Dispatch / min", btn_save_webhook: "Save Webhooks", btn_test_webhook: "Send Test Webhook",
+        label_mail_events: "Events Filtered for Mail", help_mail_cooldown: "Emails use a cooldown per event type. High frequency events are sampled and aggregated.",
+        label_port: "Port", label_from: "Sender Email", label_to: "Recipients (CSV)", btn_save_smtp: "Save Email Configuration",
+        btn_test_smtp: "Send Test Email", backup_title: "Configuration Backup & Restore", backup_desc: "Export or restore routes and settings in JSON.",
+        btn_export: "Export JSON", btn_import: "Import JSON", sec_ip_title: "IP Filter & Reverse Proxy", label_ip_mode: "Filter Mode",
+        opt_ip_allow_all: "Allow All", opt_ip_whitelist: "Whitelist Only", opt_ip_blacklist: "Use Blacklist",
+        sec_fail2ban_title: "Flood Protection & Rate Limiting", label_req_global: "Global Max Req / min", label_req_route: "Route Max Req / min",
+        label_dedup_win: "Default Dedup (sec)", label_ban_fails: "Fail2Ban: Max Fails", label_ban_win: "Inspection Window (sec)",
+        label_ban_dur: "Ban Duration (mins)", label_ban_exempt: "Immune IPs (CSV)", btn_save_sec: "Save Firewall & Security Rules",
+        bans_active_title: "Currently Banned IPs", jobs_title: "Async Jobs Queue", btn_refresh: "Refresh",
+        audit_title: "Audit Trail Logs", about_tagline: "Dynamic REST gateway & Web UI for Windows processes and executables",
+        about_dev: "Developer", about_ver: "Version", modal_fs_title: "Browse Server Filesystem",
+        sec_alarm_title: "Automatic Trigger Thresholds & Alerts", label_nfail: "Errors / Min for Alert",
+        label_ncalls: "Traffic Spike (Req/Min)", label_cool: "Alert Cooldown (minutes)", btn_save_alarms: "Save Alarm Thresholds",
+        tab_audit_api: "API Executions (Clients)", tab_audit_admin: "Admin Activity Logs",
+        audit_api_subtitle: "History of calls executed by external clients",
+        audit_admin_subtitle: "Audit log of configuration changes and operator access",
+        all_tokens_allowed: "All Tokens Allowed", tokens_limited: "Tokens Restricted", unban: "Unban", revoke: "Revoke", active: "Active", revoked: "Revoked", none: "No records found", edit: "Edit", delete: "Delete", confirm_del_route: "Permanently delete this route?", confirm_del_token: "Permanently revoke this token?",
+
+        tip_btn_shutdown: "Gracefully terminates the background Nukexe daemon, closing sockets and active workers.",
+        tip_admin_bar: "Enter your Bearer admin token here to authenticate all administrative actions on this dashboard.",
+        tip_path: "The exposed REST endpoint. For example, 'BACKUP/RUN' becomes callable via POST to /BACKUP/RUN.",
+        tip_exe: "Absolute disk path to the target executable, PowerShell script, or batch file.",
+        tip_template: "CLI arguments passed to the binary. Use {$key} syntax to inject fields directly from the client JSON body.",
+        tip_mode: "Safe: runs only the declared binary. Dangerous: allows callers to pass an arbitrary executable inside JSON (_exe). Requires authentication!",
+        tip_exec: "Sync: caller waits for stdout/stderr output. Async: immediately spawns a background job and returns a job_id.",
+        tip_timeout: "Maximum execution seconds before the host process is forcibly killed.",
+        tip_auth: "When enabled, checks for a valid Bearer token. When disabled, the route is public to everyone.",
+        tip_rate: "Maximum requests per minute for this specific route (0 = inherit global policy).",
+        tip_dedup: "Deduplication: serves cached results without rerunning the binary if identical payload is received within N seconds (-1 = default).",
+        tip_ip_route: "Comma-separated list of IPs or CIDR blocks allowed to call this route.",
+        tip_desc: "Internal developer notes or documentation regarding this endpoint.",
+        tip_notify_webhook: "Dispatches an HTTP POST event to configured webhooks on every execution of this route. Requires webhook_enabled=1 and route.exec in webhook_events.",
+        tip_tokens_acl: "Grant access exclusively to selected tokens. If none are selected, all valid tokens can call this route.",
+        tip_tok_desc: "Helpful identifier to remember who holds this token (e.g. CI/CD Runner, Monitoring, Mobile App).",
+        tip_tok_role: "Standard: execution only for authorized routes. Admin: full control over settings, routes, and tokens.",
+        tip_host: "Network interface binding: 0.0.0.0 listens everywhere; 127.0.0.1 allows local loopback calls only.",
+        tip_port: "TCP port on which Nukexe accepts incoming HTTP/HTTPS connections (default 8000).",
+        tip_ssl_mode: "Cleartext: unencrypted HTTP. Self-Signed: generates keys on the fly. Custom: provide your own .pem and .key.",
+        tip_ssl_cert: "Absolute file path to the SSL public certificate file (.pem or .crt).",
+        tip_ssl_key: "Absolute file path to the unencrypted private RSA key (.key).",
+        tip_webhook_en: "Globally activates or deactivates the outbound HTTP Webhook event dispatcher.",
+        tip_webhook_url: "One or more target HTTP(S) endpoints (comma-separated) receiving event payloads.",
+        tip_webhook_secret: "Secret key for HMAC signature sent in HTTP header X-Nukexe-Signature.",
+        tip_webhook_events: "Event subscription filter. E.g. * for all, or route.exec,ip.banned or exclusion like *, -volume.",
+        tip_webhook_timeout: "Seconds to wait for a webhook destination server to respond before timing out.",
+        tip_webhook_max: "Rate limit cap for dispatched webhooks per minute to prevent network saturation.",
+        tip_mail_events: "Filter which events trigger an email to admins. By default route.exec is excluded.",
+        tip_smtp_pass: "If left blank during save, the currently stored encrypted password remains untouched.",
+        tip_smtp_to: "Destination email addresses for security warnings, anomalous traffic, or Fail2Ban bans.",
+        tip_ip_mode: "Allow All: disabled. Whitelist: drop all incoming traffic except whitelisted IPs. Blacklist: drop listed IPs only.",
+        tip_trust_proxy: "Enable if placed behind a reverse proxy (Nginx, Traefik, Cloudflare) to read real client IP from headers.",
+        tip_req_global: "Global request limit per minute for the whole server before issuing HTTP 429 Too Many Requests.",
+        tip_req_route: "Default per-route rate limit applied when a route's specific limit is set to 0.",
+        tip_dedup_win: "Default deduplication cache window (in seconds) applied when a route is configured with -1.",
+        tip_ban_fails: "Number of consecutive bad requests (401, 404, rate limit) required to trigger an automatic IP ban.",
+        tip_ban_win: "Rolling inspection window in seconds during which suspicious errors are tallied.",
+        tip_ban_dur: "Duration in minutes an offensive client IP will remain locked out of the server.",
+        tip_ban_exempt: "Comma-separated whitelist of IPs that are completely immune to Fail2Ban automatic blacklisting.",
+        tip_nfail: "Errors per minute (401, 403, 404, 500) that immediately trigger an email alert.",
+        tip_ncalls: "Anomalous call spike per minute that triggers an email alert.",
+        tip_cool: "Cooldown time in minutes between consecutive emails to prevent flooding."
+    }
+};
+
+let currentLang = localStorage.getItem('nukexe_lang') || 'it';
+
+function setLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('nukexe_lang', lang);
+    document.documentElement.lang = lang;
+    
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if(translations[lang][key]) el.textContent = translations[lang][key];
+    });
+    
+    document.querySelectorAll('[data-tip-key]').forEach(el => {
+        const key = el.getAttribute('data-tip-key');
+        if(translations[lang][key]) {
+            el.setAttribute('data-tooltip', translations[lang][key]);
+        }
+    });
+
+    $('lang-it').classList.toggle('active', lang === 'it');
+    $('lang-en').classList.toggle('active', lang === 'en');
+    checkServerStatus();
+}
+
+function t(k) { return translations[currentLang][k] || k; }
+
+/* TEMA */
+function initTheme() {
+    const saved = localStorage.getItem('nukexe_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    $('theme-icon').textContent = saved === 'dark' ? '🌙' : '☀️';
+}
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('nukexe_theme', next);
+    $('theme-icon').textContent = next === 'dark' ? '🌙' : '☀️';
+}
+
+/* ERROR HELPER */
+function errMsg(e, data) {
+    const d = data?.detail ?? e?.response?.data?.detail ?? e?.message ?? "Errore sconosciuto";
+    if (typeof d === "string") return d;
+    if (Array.isArray(d)) return d.map(x => x?.msg || JSON.stringify(x)).join("; ");
+    return JSON.stringify(d);
+}
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const csv = s => s.split(',').map(x => x.trim()).filter(Boolean);
+
+$('baseurl').textContent = location.host || 'localhost';
+$('authtok').value = localStorage.getItem('gwx_tok') || '';
+
+function showToast(msg, isError = false, isWarn = false) {
+    const d = document.createElement('div');
+    d.className = 'toast' + (isError ? ' error' : isWarn ? ' warning' : '');
+    d.innerHTML = (isError ? '❌ ' : isWarn ? '⚠️ ' : '✅ ') + `<span>${esc(msg)}</span>`;
+    $('toast-container').appendChild(d);
+    setTimeout(() => { d.style.opacity='0'; setTimeout(()=>d.remove(),300); }, 4500);
+}
+
+function handleRateLimit(seconds) {
+    const waitSec = parseInt(seconds) || 5;
+    showToast(`Rate limit attivo. Attendi ${waitSec}s prima di riprovare.`, false, true);
+    document.querySelectorAll('.btn').forEach(b => b.disabled = true);
+    setTimeout(() => {
+        document.querySelectorAll('.btn').forEach(b => b.disabled = false);
+    }, waitSec * 1000);
+}
+
+function handleIpBan(detailMsg) {
+    $('ban-msg').textContent = detailMsg || "Il tuo indirizzo IP è stato inserito nella blacklist temporanea.";
+    $('ban-overlay').style.display = 'flex';
+}
+
+/* API CLIENT */
+async function api(method, path, body) {
+    const headers = { 'Authorization': 'Bearer ' + (localStorage.getItem('gwx_tok') || '') };
+    if (body !== undefined) headers['Content-Type'] = 'application/json';
+    
+    try {
+        const res = await fetch(path, { method, headers, body: body !== undefined ? JSON.stringify(body) : undefined });
+        
+        if (res.status === 429) {
+            const retryAfter = res.headers.get('Retry-After') || '5';
+            handleRateLimit(retryAfter);
+            throw new Error(`Rate limit superato. Riprova tra ${retryAfter} secondi.`);
+        }
+
+        if (res.status === 403) {
+            const data = await res.json().catch(() => ({}));
+            const detail = errMsg(null, data);
+            if (detail.toLowerCase().includes("bannato") || detail.toLowerCase().includes("banned")) {
+                handleIpBan(detail);
+            } else {
+                showToast(`Accesso negato: ${detail}`, true);
+            }
+            throw new Error('Forbidden');
+        }
+
+        if (res.status === 401) {
+            showToast('Token non valido o sessione scaduta. Inserisci il token Admin nella barra in alto.', true);
+            throw new Error('Auth');
+        }
+
+        if (res.status === 413) {
+            showToast('Payload troppo grande (Max Body Exceeded)', true);
+            throw new Error('Payload too large');
+        }
+
+        if (res.status === 503) {
+            showToast('Server occupato o in fase di spegnimento. Riprova più tardi.', true);
+            throw new Error('Service Unavailable');
+        }
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+            const errorText = errMsg(null, data);
+            showToast(errorText, true);
+            const err = new Error(errorText);
+            err.status = res.status;
+            throw err;
+        }
+
+        return data;
+    } catch (e) {
+        if(e.message === 'Failed to fetch' || e.name === 'TypeError') {
+            showToast('Backend non raggiungibile. Server offline o in riavvio?', true);
+        }
+        throw e;
+    }
+}
+
+async function shutdownServer() {
+    if (confirm("Attenzione: Nukexe verrà terminato immediatamente. Procedere?")) {
+        try {
+            await api('POST', '/admin/shutdown');
+            showToast("Spegnimento inviato...", true);
+            setTimeout(() => window.close(), 1500);
+        } catch(e) {}
+    }
+}
+
+async function checkServerStatus() {
+    try {
+        const res = await fetch('/health?_t=' + Date.now(), { cache: 'no-store' });
+        if (res.ok) {
+            $('srv-dot').className = 'status-dot status-online';
+            $('srv-txt').textContent = t('status_online');
+            $('srv-txt').style.color = 'var(--success)';
+            return;
+        }
+    } catch (e) {}
+    $('srv-dot').className = 'status-dot status-offline';
+    $('srv-txt').textContent = t('status_offline');
+    $('srv-txt').style.color = 'var(--danger)';
+}
+setInterval(checkServerStatus, 5000);
+
+function showTab(n) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.t === n));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'p-' + n));
+    const loaders = { 
+        routes: loadRoutes, 
+        tokens: loadTokens, 
+        security: loadSecurity, 
+        notifications: loadNotifications,
+        system: loadSystem, 
+        jobs: loadJobs, 
+        audit: () => { loadAudit(); loadAdminLog(); } 
+    };
+    if(loaders[n]) loaders[n]();
+}
+
+/* ============================================================
+   1. ROTTE
+   ============================================================ */
+let currentRoutes = [];
+let editingRouteId = null;
+let cachedSettings = {};
+
+async function renderTokenCheckboxes(selectedIds = []) {
+    try {
+        const ts = await api('GET', '/admin/tokens');
+        let h = '';
+        ts.filter(t => !t.is_admin).forEach(t => {
+            const checked = selectedIds.includes(t.id) ? 'checked' : '';
+            h += `<label class="checkbox-group" style="margin:0;"><input type="checkbox" class="route-token-cb" value="${t.id}" ${checked}> <code>${esc(t.prefix)}...</code> <span style="font-size:0.8rem; color:var(--text-muted)">(${esc(t.description || 'API')})</span></label>`;
+        });
+        $('r-tokens-container').innerHTML = h || `<span class="help-text">${t('none')}</span>`;
+    } catch(e) {}
+}
+
+function updateWebhookRouteHint() {
+    const isWebhookGloballyActive = cachedSettings.webhook_enabled === '1';
+    const hasRouteExec = (cachedSettings.webhook_events || '').includes('*') || (cachedSettings.webhook_events || '').includes('route.exec');
+    const hintEl = $('r-webhook-hint');
+
+    if ($('r-notify-webhook').checked) {
+        if (!isWebhookGloballyActive) {
+            hintEl.textContent = "Nota: I Webhook sono attualmente disattivati globalmente in Notifiche.";
+            hintEl.style.display = 'block';
+        } else if (!hasRouteExec) {
+            hintEl.textContent = "Nota: 'route.exec' non risulta compreso negli eventi inoltrati del Webhook.";
+            hintEl.style.display = 'block';
+        } else {
+            hintEl.style.display = 'none';
+        }
+    } else {
+        hintEl.style.display = 'none';
+    }
+}
+$('r-notify-webhook').addEventListener('change', updateWebhookRouteHint);
+
+async function loadRoutes() {
+    const [rs, ts, s] = await Promise.all([
+        api('GET', '/admin/routes'), 
+        api('GET', '/admin/tokens'),
+        api('GET', '/admin/settings').catch(() => ({}))
+    ]);
+    currentRoutes = rs;
+    cachedSettings = s;
+    if(!currentRoutes.length) { $('routes-list').innerHTML = `<div class="empty-state">${t('none')}</div>`; return; }
+    
+    let h = '<table><thead><tr><th>Path & Notes</th><th>Executable & Template</th><th>Security / Canali</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+    
+    currentRoutes.forEach(r => {
+        let allowedTids = [];
+        try { allowedTids = JSON.parse(r.allowed_token_ids || '[]'); } catch(e){}
+
+        let tokensHtml = '';
+        if (r.requires_auth) {
+            tokensHtml = allowedTids.length === 0
+                ? `<span class="badge bg-green">${t('all_tokens_allowed')}</span>`
+                : `<span class="badge bg-yellow">🔒 ${allowedTids.length} ${t('tokens_limited')}</span>`;
+        } else {
+            tokensHtml = `<span class="badge bg-yellow">Public</span>`;
+        }
+
+        const webhookBadge = r.notify_webhook 
+            ? `<span class="badge bg-blue" title="Webhook notifica abilitato">🔔 Webhook</span>` 
+            : '';
+
+        h += `<tr>
+            <td><code>/${esc(r.path)}</code><div class="help-text">${esc(r.description || '')}</div></td>
+            <td><div style="max-width:260px; font-weight:500; word-break:break-all;">${esc(r.exe_path)}</div><div class="help-text" style="color:var(--accent)">${esc(r.exe_args_template)}</div></td>
+            <td>
+                <div style="display:flex; gap:0.3rem; flex-wrap:wrap; margin-bottom:0.2rem;">
+                    ${r.mode==='dangerous'?'<span class="badge bg-red">DANGEROUS</span>':'<span class="badge bg-gray">Whitelist</span>'}
+                    ${tokensHtml}
+                    ${webhookBadge}
+                </div>
+                <div class="help-text">Limit: ${r.rate_limit_per_min||'Def'}/m | Dedup: ${r.dedup_seconds}s</div>
+            </td>
+            <td>${r.enabled?'<span class="badge bg-green">ACTIVE</span>':'<span class="badge bg-gray">OFF</span>'}</td>
+            <td>
+                <div class="actions">
+                    <button class="btn sm outline" onclick="toggleRoute(${r.id},${r.enabled})">${r.enabled?'OFF':'ON'}</button>
+                    <button class="btn sm outline" onclick="editRoute(${r.id})">${t('edit')}</button>
+                    <button class="btn sm danger" onclick="delRoute(${r.id})">${t('delete')}</button>
+                </div>
+            </td>
+        </tr>`;
+    });
+    $('routes-list').innerHTML = h + '</tbody></table>';
+}
+
+let currentPickerTarget = 'r-exe';
+async function openFilePicker(targetId, path = "") {
+    currentPickerTarget = targetId || 'r-exe';
+    $('file-picker-modal').style.display = 'flex';
+    $('fp-list').innerHTML = '<div class="help-text" style="text-align:center; padding: 2rem;">Loading directory...</div>';
+    
+    try {
+        const res = await api('GET', '/admin/fs/list?path=' + encodeURIComponent(path));
+        $('fp-current-path').textContent = res.path || 'System Root (Drives)';
+        let h = '';
+        res.items.forEach(item => {
+            if (item.is_dir) {
+                h += `<div style="padding:0.6rem 0.8rem; cursor:pointer; border-radius:6px; display:flex; gap:0.5rem; align-items:center;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='transparent'" onclick="openFilePicker('${currentPickerTarget}', '${esc(item.path).replace(/\\/g, '\\\\')}')">
+                    <span>📁</span> <span style="font-weight:600; font-size: 0.88rem;">${esc(item.name)}</span>
+                </div>`;
+            } else {
+                h += `<div style="padding:0.6rem 0.8rem; cursor:pointer; border-radius:6px; display:flex; gap:0.5rem; align-items:center;" onmouseover="this.style.background='var(--accent-glow)'" onmouseout="this.style.background='transparent'" onclick="selectFile('${esc(item.path).replace(/\\/g, '\\\\')}')">
+                    <span>⚙️</span> <span style="color:var(--accent); font-weight:600; font-size: 0.88rem;">${esc(item.name)}</span>
+                </div>`;
+            }
+        });
+        $('fp-list').innerHTML = h || '<div class="help-text">Cartella vuota.</div>';
+    } catch (e) {
+        $('fp-list').innerHTML = `<div class="help-text" style="color:var(--danger)">Errore: ${e.message}</div>`;
+    }
+}
+
+function selectFile(filePath) {
+    $(currentPickerTarget).value = filePath;
+    $('file-picker-modal').style.display = 'none';
+}
+
+function editRoute(id) {
+    const r = currentRoutes.find(x => x.id === id);
+    if (!r) return;
+    editingRouteId = id;
+    $('route-form-title').textContent = t('routes_title_edit') + r.path;
+    $('btn-save-route').textContent = t('btn_save_route');
+    $('btn-cancel-edit').style.display = "inline-flex";
+    
+    $('r-path').value = r.path; $('r-path').disabled = true; $('r-path').style.opacity = '0.5';
+    $('r-exe').value = r.exe_path; $('r-template').value = r.exe_args_template;
+    $('r-mode').value = r.mode; $('r-exec').value = r.exec_mode;
+    $('r-auth').value = r.requires_auth ? '1' : '0';
+    $('r-timeout').value = r.timeout; $('r-rate').value = r.rate_limit_per_min || 0;
+    $('r-dedup').value = r.dedup_seconds !== null ? r.dedup_seconds : -1;
+    $('r-notify-webhook').checked = !!r.notify_webhook;
+    try { $('r-allow').value = JSON.parse(r.allowed_ips || '[]').join(', '); } catch(e){}
+    $('r-desc').value = r.description || '';
+    
+    let allowedTokens = [];
+    try { allowedTokens = JSON.parse(r.allowed_token_ids || '[]'); } catch(e){}
+    renderTokenCheckboxes(allowedTokens);
+    updateWebhookRouteHint();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cancelEdit() {
+    editingRouteId = null;
+    $('route-form-title').textContent = t('routes_title_create');
+    $('btn-save-route').textContent = t('btn_save_route');
+    $('btn-cancel-edit').style.display = "none";
+    $('r-path').disabled = false; $('r-path').style.opacity = '1';
+    ['r-path','r-exe','r-template','r-allow','r-desc'].forEach(id => { if ($(id)) $(id).value = ''; });
+    $('r-notify-webhook').checked = false;
+    $('r-webhook-hint').style.display = 'none';
+    renderTokenCheckboxes([]);
+}
+
+async function saveRoute() {
+    const mode = $('r-mode').value;
+    const reqAuth = $('r-auth').value === '1';
+
+    if (mode === 'dangerous' && !reqAuth) {
+        showToast("Violazione sicurezza: una rotta 'dangerous' richiede obbligatoriamente l'autenticazione.", true);
+        return;
+    }
+
+    const allowed_token_ids = Array.from(document.querySelectorAll('.route-token-cb:checked')).map(cb => parseInt(cb.value));
+    const p = {
+        path: $('r-path').value.trim(), 
+        exe_path: $('r-exe').value.trim(), 
+        exe_args_template: $('r-template').value,
+        mode: mode, 
+        exec_mode: $('r-exec').value, 
+        timeout: +$('r-timeout').value || 30,
+        requires_auth: reqAuth, 
+        rate_limit_per_min: +$('r-rate').value || 0,
+        dedup_seconds: parseInt($('r-dedup').value), 
+        allowed_ips: csv($('r-allow').value),
+        notify_webhook: $('r-notify-webhook').checked ? 1 : 0,
+        description: $('r-desc').value, 
+        allowed_token_ids: allowed_token_ids
+    };
+    
+    if(!p.path || !p.exe_path) return showToast('Path ed Eseguibile sono obbligatori', true);
+    
+    if (editingRouteId) {
+        await api('PUT', '/admin/routes/' + editingRouteId, p);
+        showToast('Rotta aggiornata');
+    } else {
+        if(p.mode === 'dangerous' && !confirm('ATTENZIONE: La modalità DANGEROUS consente esecuzione dinamica. Procedere?')) return;
+        await api('POST', '/admin/routes', p);
+        showToast('Rotta creata');
+    }
+    cancelEdit(); loadRoutes();
+}
+
+async function delRoute(id) { if(confirm(t('confirm_del_route'))) { await api('DELETE', '/admin/routes/'+id); loadRoutes(); } }
+async function toggleRoute(id, en) { await api('PUT', '/admin/routes/'+id, {enabled: !en}); loadRoutes(); }
+
+/* ============================================================
+   2. ACCESS TOKEN
+   ============================================================ */
+let tokenCache = [];
+async function loadTokens() {
+    const ts = await api('GET', '/admin/tokens');
+    tokenCache = ts;
+    if(!ts.length) { $('tokens-list').innerHTML = `<div class="empty-state">${t('none')}</div>`; return; }
+    let h = '<table><thead><tr><th>ID</th><th>Prefix</th><th>Role</th><th>Description</th><th>Last Used</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+    ts.forEach(tkn => {
+        h += `<tr>
+        <td><code>#${tkn.id}</code></td>
+        <td><code>${esc(tkn.prefix)}...</code></td>
+        <td>${tkn.is_admin?'<span class="badge bg-red">ADMIN</span>':'<span class="badge bg-green">API USER</span>'}</td>
+        <td>${esc(tkn.description)}</td>
+        <td><span class="help-text">${esc(tkn.last_used || 'Never')}</span></td>
+        <td>${tkn.enabled?`<span class="badge bg-green">${t('active')}</span>`:`<span class="badge bg-gray">${t('revoked')}</span>`}</td>
+        <td><button class="btn sm danger" onclick="delToken(${tkn.id})">${t('revoke')}</button></td></tr>`;
+    });
+    $('tokens-list').innerHTML = h + '</tbody></table>';
+}
+
+async function createToken() {
+    const r = await api('POST', '/admin/tokens', {description: $('t-desc').value, is_admin: $('t-type').value === '1'});
+    $('t-new').innerHTML = `<div style="background:var(--bg-input); padding:1rem; border:1px dashed var(--success); border-radius:var(--radius-sm); margin-top:1rem;">
+        <strong style="color:var(--success)">Token Generato (Salvalo ora, non sarà più visibile!):</strong>
+        <code style="display:block; margin-top:0.4rem; font-size:1rem; color:var(--text-main);">${esc(r.token)}</code></div>`;
+    loadTokens();
+}
+
+async function delToken(id) { if(confirm(t('confirm_del_token'))) { await api('DELETE', '/admin/tokens/'+id); loadTokens(); } }
+
+/* ============================================================
+   3. SICUREZZA & FIREWALL (DEDICATA & COMPLETA)
+   ============================================================ */
+async function loadSecurity() {
+    const s = await api('GET', '/admin/settings');
+    $('g-ipmode').value = s.ip_mode || 'allow_all'; 
+    $('g-ipwl').value = s.ip_whitelist || ''; 
+    $('g-ipbl').value = s.ip_blacklist || ''; 
+    $('g-trustproxy').checked = s.trust_proxy === '1';
+    
+    $('g-rate').value = s.rate_global_per_min || 120; 
+    $('g-rrate').value = s.rate_route_per_min || 60; 
+    $('g-dedup').value = s.dedup_window_s || 0;
+    
+    $('g-banf').value = s.ban_failures || 10; 
+    $('g-banw').value = s.ban_window_s || 60; 
+    $('g-banm').value = s.ban_minutes || 15; 
+    $('g-exempt').value = s.ban_exempt_ips || '';
+
+    const bs = await api('GET', '/admin/bans');
+    let h = '<table><thead><tr><th>IP</th><th>Reason</th><th>Banned At</th><th>Expires</th><th>Action</th></tr></thead><tbody>';
+    bs.forEach(b => { h += `<tr><td><code>${esc(b.ip)}</code></td><td>${esc(b.reason)}</td><td>${esc(b.banned_at)}</td><td>${esc(b.expires_at)}</td><td><button class="btn sm outline" onclick="unban('${esc(b.ip)}')">${t('unban')}</button></td></tr>`; });
+    $('bans-list').innerHTML = bs.length ? h + '</tbody></table>' : `<div class="empty-state">${t('none')}</div>`;
+}
+
+async function saveSecurity() {
+    const payload = {
+        ip_mode: $('g-ipmode').value, 
+        ip_whitelist: $('g-ipwl').value, 
+        ip_blacklist: $('g-ipbl').value, 
+        trust_proxy: $('g-trustproxy').checked ? '1' : '0', 
+        rate_global_per_min: String($('g-rate').value), 
+        rate_route_per_min: String($('g-rrate').value), 
+        dedup_window_s: String($('g-dedup').value), 
+        ban_failures: String($('g-banf').value), 
+        ban_window_s: String($('g-banw').value), 
+        ban_minutes: String($('g-banm').value), 
+        ban_exempt_ips: $('g-exempt').value
+    };
+    const res = await api('POST', '/admin/settings', payload);
+    showToast(`Regole Firewall & Sicurezza salvate (${res.updated} campi aggiornati)`); 
+    loadSecurity();
+}
+async function unban(ip) { await api('DELETE', '/admin/bans/'+ip); showToast(`IP ${ip} sbloccato`); loadSecurity(); }
+
+/* ============================================================
+   4. NOTIFICHE & ALLARMI (WEBHOOK, SMTP, EVENTI, SOGLIE)
+   ============================================================ */
+function buildEventChips(containerId, inputId) {
+    const c = $(containerId);
+    c.innerHTML = '';
+    AVAILABLE_EVENTS.forEach(ev => {
+        const span = document.createElement('span');
+        span.className = 'chip';
+        span.textContent = '+ ' + ev;
+        span.onclick = () => {
+            const input = $(inputId);
+            let current = input.value.split(',').map(s=>s.trim()).filter(Boolean);
+            if (!current.includes(ev)) {
+                current.push(ev);
+                input.value = current.join(', ');
+            }
+        };
+        c.appendChild(span);
+    });
+}
+
+async function loadNotifications() {
+    buildEventChips('webhook-chips', 'w-events');
+    buildEventChips('mail-chips', 's-mail-events');
+
+    const s = await api('GET', '/admin/settings');
+    cachedSettings = s;
+    
+    // Webhook
+    $('w-en').checked = s.webhook_enabled === '1';
+    $('w-url').value = s.webhook_url || '';
+    $('w-secret').value = s.webhook_secret || '';
+    $('w-events').value = s.webhook_events || '*';
+    $('w-timeout').value = s.webhook_timeout || '10';
+    $('w-max').value = s.webhook_max_per_min || '60';
+
+    // SMTP
+    $('s-en').checked = s.smtp_enabled === '1'; 
+    $('s-host').value = s.smtp_host || ''; 
+    $('s-port').value = s.smtp_port || 587;
+    $('s-tls').checked = s.smtp_tls === '1'; 
+    $('s-user').value = s.smtp_user || '';
+    $('s-pass').value = ''; // Mai precompilare
+    $('s-from').value = s.smtp_from || ''; 
+    $('s-to').value = s.smtp_to || '';
+    $('s-mail-events').value = s.notify_mail_events || 'ip.banned,failures,volume,route.unauthorized,route.forbidden,rate.limited,route.invalid,admin.action';
+
+    const pBadge = $('smtp-pass-badge');
+    if (s.smtp_pass_set) {
+        pBadge.className = 'badge bg-green';
+        pBadge.textContent = 'Password impostata ✓';
+    } else {
+        pBadge.className = 'badge bg-yellow';
+        pBadge.textContent = 'Password mancante ⚠';
+    }
+
+    // Soglie Trigger Allarmi
+    $('g-nfail').value = s.notify_failures_per_min || 0;
+    $('g-ncalls').value = s.notify_calls_per_min || 0;
+    $('g-cool').value = s.notify_cooldown_min || 10;
+}
+
+async function saveWebhookSettings() {
+    const payload = {
+        webhook_enabled: $('w-en').checked ? '1' : '0',
+        webhook_url: $('w-url').value.trim(),
+        webhook_secret: $('w-secret').value,
+        webhook_events: $('w-events').value.trim() || '*',
+        webhook_timeout: String($('w-timeout').value || '10'),
+        webhook_max_per_min: String($('w-max').value || '60')
+    };
+    const res = await api('POST', '/admin/settings', payload);
+    cachedSettings = { ...cachedSettings, ...payload };
+    showToast(`Webhook salvati (${res.updated} chiavi aggiornate)`);
+}
+
+async function testWebhook() {
+    try {
+        const res = await api('POST', '/admin/settings/webhook/test');
+        showToast(res.status === 'sent' ? 'Webhook di test inviato con successo!' : JSON.stringify(res));
+    } catch(e) {}
+}
+
+async function saveSmtp() {
+    const payload = {
+        smtp_enabled: $('s-en').checked ? '1' : '0',
+        smtp_host: $('s-host').value.trim(),
+        smtp_port: String($('s-port').value || '587'),
+        smtp_tls: $('s-tls').checked ? '1' : '0',
+        smtp_user: $('s-user').value.trim(),
+        smtp_from: $('s-from').value.trim(),
+        smtp_to: $('s-to').value.trim(),
+        notify_mail_events: $('s-mail-events').value.trim()
+    };
+
+    const newPass = $('s-pass').value;
+    if (newPass.length > 0) {
+        payload.smtp_pass = newPass;
+    }
+
+    const res = await api('POST', '/admin/settings', payload);
+    showToast(`Configurazione Email salvata (${res.updated} campi aggiornati)`);
+    loadNotifications();
+}
+
+async function testSmtp() {
+    try {
+        const res = await api('POST', '/admin/settings/smtp/test');
+        showToast(res.status === 'sent' ? 'Email di test inviata con successo!' : JSON.stringify(res));
+    } catch(e) {}
+}
+
+async function saveAlarmThresholds() {
+    const payload = {
+        notify_failures_per_min: String($('g-nfail').value), 
+        notify_calls_per_min: String($('g-ncalls').value), 
+        notify_cooldown_min: String($('g-cool').value)
+    };
+    const res = await api('POST', '/admin/settings', payload);
+    showToast(`Soglie allarmi aggiornate (${res.updated} campi salvati)`);
+}
+
+/* ============================================================
+   5. SISTEMA & RETE (SOLO INFRASTRUTTURA & MANUTENZIONE)
+   ============================================================ */
+async function loadSystem() {
+    const s = await api('GET', '/admin/settings');
+    $('s-shost').value = s.server_host || '0.0.0.0'; 
+    $('s-sport').value = s.server_port || 8000;
+    $('s-sslmode').value = s.ssl_mode || '0'; 
+    $('s-sslcert').value = s.ssl_certfile || ''; 
+    $('s-sslkey').value = s.ssl_keyfile || '';
+}
+
+async function saveServerSettings() {
+    const payload = {
+        server_host: $('s-shost').value, 
+        server_port: $('s-sport').value,
+        ssl_mode: $('s-sslmode').value, 
+        ssl_certfile: $('s-sslcert').value, 
+        ssl_keyfile: $('s-sslkey').value
+    };
+    const res = await api('POST', '/admin/settings', payload);
+    showToast(`Rete salvata (${res.updated ?? 'ok'} chiavi aggiornate). Riavvio richiesto.`);
+}
+
+async function exportConfig() {
+    const j = await api('GET', '/admin/config/export');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(j,null,2)], {type:'application/json'}));
+    a.download = 'Nukexe_backup.json'; a.click();
+}
+function importConfig(f) {
+    if(!f) return; const rd = new FileReader();
+    rd.onload = async() => { try { await api('POST', '/admin/config/import', JSON.parse(rd.result)); showToast('Ripristino completato'); showTab('routes'); } catch(e){} };
+    rd.readAsText(f);
+}
+
+/* ============================================================
+   6. JOBS ASINCRONI
+   ============================================================ */
+async function loadJobs() {
+    const js = await api('GET', '/admin/jobs?limit=50');
+    if(!js.length) { $('jobs-list').innerHTML = `<div class="empty-state">${t('none')}</div>`; return; }
+    let h = '<table><thead><tr><th>ID</th><th>Route</th><th>Status</th><th>Exit Code</th><th>Created</th></tr></thead><tbody>';
+    js.forEach(j => {
+        const bg = j.status==='done'?'bg-green':j.status==='failed'?'bg-red':j.status==='running'?'bg-yellow':'bg-gray';
+        h += `<tr><td><code>${esc(j.id.slice(0,8))}</code></td><td><code>/${esc(j.route_path)}</code></td><td><span class="badge ${bg}">${esc(j.status.toUpperCase())}</span></td><td>${j.exit_code??'—'}</td><td>${esc(j.created_at)}</td></tr>`;
+    });
+    $('jobs-list').innerHTML = h + '</tbody></table>';
+}
+
+/* ============================================================
+   7. AUDIT & ADMIN LOG
+   ============================================================ */
+let audPage = 1; const audLimit = 15;
+async function loadAudit() {
+    const offset = (audPage - 1) * audLimit;
+    const res = await api('GET', `/admin/audit?limit=${audLimit}&offset=${offset}`).catch(() => ({ total: 0, items: [] }));
+    const ls = res.items || [];
+    const maxPage = Math.ceil((res.total || 0) / audLimit) || 1;
+    $('aud-page-info').textContent = `Pag. ${audPage} / ${maxPage} (${res.total || 0})`;
+    $('btn-aud-prev').disabled = audPage <= 1; $('btn-aud-next').disabled = audPage >= maxPage;
+
+    if(!ls.length) { $('audit-list').innerHTML = `<div class="empty-state">${t('none')}</div>`; return; }
+    let h = '<table><thead><tr><th>Date</th><th>Route</th><th>Client IP</th><th>Duration</th><th>Exit</th><th>Snippet</th></tr></thead><tbody>';
+    ls.forEach(l => {
+        const out = String(l.stderr || l.stdout || '');
+        const exitBadge = l.exit_code === 0 ? '<span class="badge bg-green">OK (0)</span>' : '<span class="badge bg-red">ERR (' + l.exit_code + ')</span>';
+        h += `<tr><td>${esc(l.created_at)}</td><td><code>/${esc(l.route_path)}</code></td><td><code>${esc(l.client_ip)}</code></td><td>${l.duration_ms}ms</td><td>${exitBadge}</td>
+        <td><span class="help-text" style="display:block; max-width:240px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${esc(out)}">${esc(out.slice(0,80))}</span></td></tr>`;
+    });
+    $('audit-list').innerHTML = h + '</tbody></table>';
+}
+function changeAudPage(dir) { audPage += dir; if(audPage < 1) audPage = 1; loadAudit(); }
+
+let rawAdminLogs = [];
+let admlogPage = 1; const admlogLimit = 50;
+
+async function loadAdminLog() {
+    const offset = (admlogPage - 1) * admlogLimit;
+    const res = await api('GET', `/admin/adminlog?limit=${admlogLimit}&offset=${offset}`).catch(() => ({ total: 0, items: [] }));
+    rawAdminLogs = res.items || [];
+    const maxPage = Math.ceil((res.total || 0) / admlogLimit) || 1;
+    $('admlog-page-info').textContent = `Pag. ${admlogPage} / ${maxPage} (${res.total || 0})`;
+    $('btn-admlog-prev').disabled = admlogPage <= 1; $('btn-admlog-next').disabled = admlogPage >= maxPage;
+    renderAdminLog();
+}
+
+function renderAdminLog() {
+    const filterMethod = $('admlog-filter-method').value.toUpperCase();
+    const filterPath = $('admlog-filter-path').value.trim().toLowerCase();
+
+    const filtered = rawAdminLogs.filter(item => {
+        const m = (item.method || '').toUpperCase();
+        const p = (item.path || '').toLowerCase();
+        if (filterMethod && m !== filterMethod) return false;
+        if (filterPath && !p.includes(filterPath)) return false;
+        return true;
+    });
+
+    if(!filtered.length) { $('adminlog-list').innerHTML = `<div class="empty-state">${t('none')}</div>`; return; }
+
+    let h = '<table><thead><tr><th>Timestamp (UTC)</th><th>Method</th><th>Action Path</th><th>IP Sorgente</th><th>Token Operatore</th></tr></thead><tbody>';
+    filtered.forEach(item => {
+        const method = (item.method || 'POST').toUpperCase();
+        const mBadge = method === 'DELETE' ? 'bg-red' : method === 'PUT' ? 'bg-yellow' : method === 'GET' ? 'bg-gray' : 'bg-blue';
+        
+        let tokenDesc = item.token_id !== null ? `#${item.token_id}` : '<span class="badge bg-gray">Nessuno/Sys</span>';
+        const found = tokenCache.find(x => x.id === item.token_id);
+        if(found) tokenDesc = `<code>${esc(found.prefix)}...</code> (${esc(found.description || 'Admin')})`;
+
+        h += `<tr>
+            <td><span class="help-text" style="font-weight:600;">${esc(item.created_at)} UTC</span></td>
+            <td><span class="badge ${mBadge}">${esc(method)}</span></td>
+            <td><code>${esc(item.path)}</code></td>
+            <td><code>${esc(item.ip)}</code></td>
+            <td>${tokenDesc}</td>
+        </tr>`;
+    });
+    $('adminlog-list').innerHTML = h + '</tbody></table>';
+}
+function changeAdminLogPage(dir) { admlogPage += dir; if(admlogPage < 1) admlogPage = 1; loadAdminLog(); }
+
+function switchAuditSubtab(type) {
+    $('subtab-btn-api').classList.toggle('active', type === 'api');
+    $('subtab-btn-admin').classList.toggle('active', type === 'admin');
+    $('audit-sub-api').style.display = type === 'api' ? 'block' : 'none';
+    $('audit-sub-admin').style.display = type === 'admin' ? 'block' : 'none';
+    if(type === 'admin') loadAdminLog(); else loadAudit();
+}
+
+window.onload = () => {
+    initTheme();
+    setLanguage(currentLang);
+    showTab('routes');
+    renderTokenCheckboxes([]);
+};
+</script>
+</body>
+</html>
